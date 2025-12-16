@@ -71,9 +71,15 @@ Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')
 Route::middleware(['auth', 'role:pegawai'])->prefix('pegawai')->name('pegawai.')->group(function () {
     Route::get('/dashboard', PegawaiDashboard::class)->name('dashboard');
 
+    // Barang (read-only)
+    Route::get('/barang', \App\Livewire\Pegawai\Barang\Index::class)->name('barang.index');
+
     // Pengajuan
     Route::get('/pengajuan', \App\Livewire\Pegawai\Pengajuan\Index::class)->name('pengajuan.index');
     Route::get('/pengajuan/create', \App\Livewire\Pegawai\Pengajuan\Create::class)->name('pengajuan.create');
+
+    // Riwayat
+    Route::get('/riwayat', \App\Livewire\Pegawai\Riwayat\Index::class)->name('riwayat.index');
 });
 
 

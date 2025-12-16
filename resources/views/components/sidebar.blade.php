@@ -87,7 +87,8 @@
                 </svg>
                 <span class="font-medium">Dashboard</span>
             </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-text-secondary hover:bg-background hover:text-text-primary transition-all duration-200">
+            <a href="{{ route('pegawai.barang.index') }}" 
+               class="flex items-center gap-3 px-4 py-3 rounded-xl {{ request()->routeIs('pegawai.barang.*') ? 'bg-primary text-white' : 'text-text-secondary hover:bg-background hover:text-text-primary' }} transition-all duration-200">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                 </svg>
@@ -100,7 +101,8 @@
                 </svg>
                 <span class="font-medium">Pengajuan Saya</span>
             </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-text-secondary hover:bg-background hover:text-text-primary transition-all duration-200">
+            <a href="{{ route('pegawai.riwayat.index') }}" 
+               class="flex items-center gap-3 px-4 py-3 rounded-xl {{ request()->routeIs('pegawai.riwayat.*') ? 'bg-primary text-white' : 'text-text-secondary hover:bg-background hover:text-text-primary' }} transition-all duration-200">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
