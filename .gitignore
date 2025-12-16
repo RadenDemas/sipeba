@@ -5,6 +5,11 @@
 .env.production
 .phpactor.json
 .phpunit.result.cache
+.color_palette.md
+.erd.md
+.system_requirements.md
+.user_requirementes.md
+.user_story.md
 /.fleet
 /.idea
 /.nova
