@@ -101,6 +101,13 @@
                 </svg>
                 <span class="font-medium">Pengajuan Saya</span>
             </a>
+            <a href="{{ route('pegawai.pengembalian.index') }}" 
+               class="flex items-center gap-3 px-4 py-3 rounded-xl {{ request()->routeIs('pegawai.pengembalian.*') ? 'bg-primary text-white' : 'text-text-secondary hover:bg-background hover:text-text-primary' }} transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z"></path>
+                </svg>
+                <span class="font-medium">Pengembalian</span>
+            </a>
             <a href="{{ route('pegawai.riwayat.index') }}" 
                class="flex items-center gap-3 px-4 py-3 rounded-xl {{ request()->routeIs('pegawai.riwayat.*') ? 'bg-primary text-white' : 'text-text-secondary hover:bg-background hover:text-text-primary' }} transition-all duration-200">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

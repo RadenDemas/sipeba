@@ -26,7 +26,7 @@ class Index extends Component
         $barang = Barang::findOrFail($id);
         $barang->delete();
         
-        session()->flash('success', 'Barang berhasil dihapus.');
+        $this->dispatch('swal:deleted', message: 'Barang berhasil dihapus.');
     }
 
     public function logout()

@@ -34,7 +34,7 @@ class Index extends Component
             'keterangan' => 'Dibatalkan oleh pemohon',
         ]);
 
-        session()->flash('success', 'Pengajuan berhasil dibatalkan.');
+        $this->dispatch('swal:success', message: 'Pengajuan berhasil dibatalkan.');
     }
 
     public function logout()

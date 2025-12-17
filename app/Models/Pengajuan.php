@@ -13,7 +13,6 @@ class Pengajuan extends Model
 
     // Status constants
     const STATUS_PENDING = 'pending';
-    const STATUS_DISETUJUI = 'disetujui';
     const STATUS_DITOLAK = 'ditolak';
     const STATUS_DIPINJAM = 'dipinjam';
     const STATUS_SELESAI = 'selesai';
@@ -82,10 +81,18 @@ class Pengajuan extends Model
     }
 
     /**
-     * Check if pengajuan is approved
+     * Check if pengajuan is currently borrowed
      */
-    public function isApproved(): bool
+    public function isDipinjam(): bool
     {
-        return $this->status === self::STATUS_DISETUJUI;
+        return $this->status === self::STATUS_DIPINJAM;
+    }
+
+    /**
+     * Check if pengajuan is completed
+     */
+    public function isSelesai(): bool
+    {
+        return $this->status === self::STATUS_SELESAI;
     }
 }

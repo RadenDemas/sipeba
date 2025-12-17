@@ -32,12 +32,12 @@ class Index extends Component
         $user = User::findOrFail($id);
         
         if ($user->id === auth()->id()) {
-            session()->flash('error', 'Tidak dapat menghapus akun sendiri.');
+            $this->dispatch('swal:error', message: 'Tidak dapat menghapus akun sendiri.');
             return;
         }
 
         $user->delete();
-        session()->flash('success', 'Pengguna berhasil dihapus.');
+        $this->dispatch('swal:deleted', message: 'Pengguna berhasil dihapus.');
     }
 
     public function logout()

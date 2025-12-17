@@ -36,9 +36,11 @@ class Create extends Component
             'jumlah_tersedia' => $this->jumlah_total,
         ]);
 
-        session()->flash('success', 'Barang berhasil ditambahkan.');
+        $routePrefix = auth()->user()->isAdmin() ? 'admin' : 'petugas';
+        
+        session()->flash('swal', ['type' => 'success', 'message' => 'Barang berhasil ditambahkan.']);
 
-        return redirect()->route('admin.barang.index');
+        return redirect()->route($routePrefix . '.barang.index');
     }
 
     public function logout()

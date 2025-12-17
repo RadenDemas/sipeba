@@ -107,20 +107,14 @@
                     <div class="flex items-center gap-4">
                         @if($pengajuan->status === 'pending')
                             <button wire:click="approve" 
-                                    wire:confirm="Yakin ingin menyetujui pengajuan ini?"
+                                    wire:confirm="Yakin ingin menyetujui pengajuan ini? Status akan langsung berubah menjadi dipinjam."
                                     class="px-6 py-3 bg-approved hover:bg-approved/90 text-white font-medium rounded-xl transition-colors">
-                                Setujui
+                                Setujui & Pinjamkan
                             </button>
                             <button wire:click="reject" 
                                     wire:confirm="Yakin ingin menolak pengajuan ini?"
                                     class="px-6 py-3 bg-rejected hover:bg-rejected/90 text-white font-medium rounded-xl transition-colors">
                                 Tolak
-                            </button>
-                        @elseif($pengajuan->status === 'disetujui')
-                            <button wire:click="markDipinjam" 
-                                    wire:confirm="Tandai barang sudah diambil oleh pemohon?"
-                                    class="px-6 py-3 bg-primary hover:bg-primary-hover text-white font-medium rounded-xl transition-colors">
-                                Tandai Dipinjam
                             </button>
                         @endif
                         <a href="{{ route($routePrefix . '.pengajuan.index') }}" 

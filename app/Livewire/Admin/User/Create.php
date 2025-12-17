@@ -36,7 +36,7 @@ class Create extends Component
             'role' => $this->role,
         ]);
 
-        session()->flash('success', 'Pengguna berhasil ditambahkan.');
+        session()->flash('swal', ['type' => 'success', 'message' => 'Pengguna berhasil ditambahkan.']);
 
         return redirect()->route('admin.user.index');
     }

@@ -36,7 +36,7 @@ class Create extends Component
 
         // Check availability
         if ($barang->jumlah_tersedia < $this->jumlah) {
-            $this->addError('jumlah', 'Stok tidak mencukupi. Tersedia: ' . $barang->jumlah_tersedia);
+            $this->dispatch('swal:error', message: 'Stok tidak mencukupi. Tersedia: ' . $barang->jumlah_tersedia);
             return;
         }
 
@@ -50,7 +50,7 @@ class Create extends Component
             'keterangan' => $this->keterangan,
         ]);
 
-        session()->flash('success', 'Pengajuan berhasil dibuat.');
+        session()->flash('swal', ['type' => 'success', 'message' => 'Pengajuan berhasil dibuat.']);
 
         return redirect()->route('pegawai.pengajuan.index');
     }

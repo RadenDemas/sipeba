@@ -58,9 +58,11 @@ class Edit extends Component
             'jumlah_tersedia' => max(0, $newAvailable),
         ]);
 
-        session()->flash('success', 'Barang berhasil diperbarui.');
+        $routePrefix = auth()->user()->isAdmin() ? 'admin' : 'petugas';
+        
+        session()->flash('swal', ['type' => 'success', 'message' => 'Barang berhasil diperbarui.']);
 
-        return redirect()->route('admin.barang.index');
+        return redirect()->route($routePrefix . '.barang.index');
     }
 
     public function logout()

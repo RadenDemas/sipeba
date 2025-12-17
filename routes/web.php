@@ -78,6 +78,9 @@ Route::middleware(['auth', 'role:pegawai'])->prefix('pegawai')->name('pegawai.')
     Route::get('/pengajuan', \App\Livewire\Pegawai\Pengajuan\Index::class)->name('pengajuan.index');
     Route::get('/pengajuan/create', \App\Livewire\Pegawai\Pengajuan\Create::class)->name('pengajuan.create');
 
+    // Pengembalian
+    Route::get('/pengembalian', \App\Livewire\Pegawai\Pengembalian\Index::class)->name('pengembalian.index');
+
     // Riwayat
     Route::get('/riwayat', \App\Livewire\Pegawai\Riwayat\Index::class)->name('riwayat.index');
 });

@@ -58,7 +58,7 @@ class Edit extends Component
 
         $this->user->update($data);
 
-        session()->flash('success', 'Pengguna berhasil diperbarui.');
+        session()->flash('swal', ['type' => 'success', 'message' => 'Pengguna berhasil diperbarui.']);
 
         return redirect()->route('admin.user.index');
     }

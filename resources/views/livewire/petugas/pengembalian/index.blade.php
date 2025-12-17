@@ -27,6 +27,27 @@
                 </div>
             @endif
 
+            <!-- Tabs -->
+            <div class="flex gap-2 mb-6">
+                <button 
+                    wire:click="setTab('pending')"
+                    class="px-4 py-2 rounded-xl font-medium transition-colors {{ $tab === 'pending' ? 'bg-primary text-white' : 'bg-surface text-text-secondary hover:bg-background border border-border' }}"
+                >
+                    Menunggu Verifikasi
+                    @if($pendingReturns->count() > 0)
+                        <span class="ml-2 px-2 py-0.5 text-xs rounded-full {{ $tab === 'pending' ? 'bg-white/20' : 'bg-pending/20 text-pending' }}">
+                            {{ $pendingReturns->total() }}
+                        </span>
+                    @endif
+                </button>
+                <button 
+                    wire:click="setTab('dipinjam')"
+                    class="px-4 py-2 rounded-xl font-medium transition-colors {{ $tab === 'dipinjam' ? 'bg-primary text-white' : 'bg-surface text-text-secondary hover:bg-background border border-border' }}"
+                >
+                    Barang Dipinjam
+                </button>
+            </div>
+
             <!-- Search -->
             <div class="mb-6">
                 <input 
@@ -37,62 +58,122 @@
                 >
             </div>
 
-            <!-- Table -->
-            <div class="bg-surface rounded-2xl border border-border overflow-hidden">
-                <table class="w-full">
-                    <thead class="bg-background">
-                        <tr>
-                            <th class="px-6 py-4 text-left text-sm font-semibold text-text-primary">Peminjam</th>
-                            <th class="px-6 py-4 text-left text-sm font-semibold text-text-primary">Barang</th>
-                            <th class="px-6 py-4 text-left text-sm font-semibold text-text-primary">Jumlah</th>
-                            <th class="px-6 py-4 text-left text-sm font-semibold text-text-primary">Periode</th>
-                            <th class="px-6 py-4 text-left text-sm font-semibold text-text-primary">Status</th>
-                            <th class="px-6 py-4 text-right text-sm font-semibold text-text-primary">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-border">
-                        @forelse($dipinjam as $p)
-                            @php
-                                $isOverdue = \Carbon\Carbon::parse($p->date_end)->isPast();
-                            @endphp
-                            <tr class="hover:bg-background/50 transition-colors {{ $isOverdue ? 'bg-rejected/5' : '' }}">
-                                <td class="px-6 py-4">
-                                    <p class="font-medium text-text-primary">{{ $p->user->name }}</p>
-                                </td>
-                                <td class="px-6 py-4 text-text-primary">{{ $p->barang->nama_barang }}</td>
-                                <td class="px-6 py-4 text-text-primary">{{ $p->jumlah }}</td>
-                                <td class="px-6 py-4 text-sm">
-                                    <p class="text-text-secondary">{{ \Carbon\Carbon::parse($p->date_start)->format('d/m') }} - {{ \Carbon\Carbon::parse($p->date_end)->format('d/m/Y') }}</p>
-                                    @if($isOverdue)
-                                        <span class="text-rejected text-xs font-medium">Terlambat</span>
-                                    @endif
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2 py-1 rounded-full text-xs font-medium capitalize bg-primary/10 text-primary">
-                                        Dipinjam
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <a href="{{ route($routePrefix . '.pengembalian.create', $p) }}" 
-                                       class="px-3 py-2 bg-returned hover:bg-returned/90 text-white text-sm font-medium rounded-lg transition-colors">
-                                        Proses Kembali
-                                    </a>
-                                </td>
-                            </tr>
-                        @empty
+            @if($tab === 'pending')
+                <!-- Pending Returns Table -->
+                <div class="bg-surface rounded-2xl border border-border overflow-hidden">
+                    <table class="w-full">
+                        <thead class="bg-background">
                             <tr>
-                                <td colspan="6" class="px-6 py-12 text-center text-text-secondary">
-                                    Tidak ada barang yang sedang dipinjam.
-                                </td>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-text-primary">Peminjam</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-text-primary">Barang</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-text-primary">Jumlah</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-text-primary">Direquest</th>
+                                <th class="px-6 py-4 text-right text-sm font-semibold text-text-primary">Aksi</th>
                             </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody class="divide-y divide-border">
+                            @forelse($pendingReturns as $return)
+                                <tr class="hover:bg-background/50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <p class="font-medium text-text-primary">{{ $return->pengajuan->user->name }}</p>
+                                        <p class="text-xs text-text-secondary">Request: {{ $return->user?->name ?? 'Pegawai' }}</p>
+                                    </td>
+                                    <td class="px-6 py-4 text-text-primary">{{ $return->pengajuan->barang->nama_barang }}</td>
+                                    <td class="px-6 py-4 text-text-primary">{{ $return->pengajuan->jumlah }}</td>
+                                    <td class="px-6 py-4 text-sm text-text-secondary">
+                                        {{ $return->created_at->format('d/m/Y H:i') }}
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <div class="flex items-center justify-end gap-2">
+                                            <button 
+                                                wire:click="verifyReturn({{ $return->id }})"
+                                                wire:confirm="Konfirmasi barang sudah dikembalikan?"
+                                                class="px-3 py-2 bg-returned hover:bg-returned/90 text-white text-sm font-medium rounded-lg transition-colors"
+                                            >
+                                                Verifikasi
+                                            </button>
+                                            <button 
+                                                wire:click="rejectReturn({{ $return->id }})"
+                                                wire:confirm="Tolak request pengembalian? (barang belum dikembalikan)"
+                                                class="px-3 py-2 bg-rejected/10 hover:bg-rejected/20 text-rejected text-sm font-medium rounded-lg transition-colors"
+                                            >
+                                                Tolak
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="px-6 py-12 text-center text-text-secondary">
+                                        Tidak ada request pengembalian yang menunggu verifikasi.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
 
-            <div class="mt-6">
-                {{ $dipinjam->links() }}
-            </div>
+                <div class="mt-6">
+                    {{ $pendingReturns->links() }}
+                </div>
+            @else
+                <!-- Borrowed Items Table (Direct Process) -->
+                <div class="bg-surface rounded-2xl border border-border overflow-hidden">
+                    <table class="w-full">
+                        <thead class="bg-background">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-text-primary">Peminjam</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-text-primary">Barang</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-text-primary">Jumlah</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-text-primary">Periode</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-text-primary">Status</th>
+                                <th class="px-6 py-4 text-right text-sm font-semibold text-text-primary">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-border">
+                            @forelse($dipinjam as $p)
+                                @php
+                                    $isOverdue = \Carbon\Carbon::parse($p->date_end)->isPast();
+                                @endphp
+                                <tr class="hover:bg-background/50 transition-colors {{ $isOverdue ? 'bg-rejected/5' : '' }}">
+                                    <td class="px-6 py-4">
+                                        <p class="font-medium text-text-primary">{{ $p->user->name }}</p>
+                                    </td>
+                                    <td class="px-6 py-4 text-text-primary">{{ $p->barang->nama_barang }}</td>
+                                    <td class="px-6 py-4 text-text-primary">{{ $p->jumlah }}</td>
+                                    <td class="px-6 py-4 text-sm">
+                                        <p class="text-text-secondary">{{ \Carbon\Carbon::parse($p->date_start)->format('d/m') }} - {{ \Carbon\Carbon::parse($p->date_end)->format('d/m/Y') }}</p>
+                                        @if($isOverdue)
+                                            <span class="text-rejected text-xs font-medium">Terlambat</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-2 py-1 rounded-full text-xs font-medium capitalize bg-primary/10 text-primary">
+                                            Dipinjam
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <a href="{{ route($routePrefix . '.pengembalian.create', $p) }}" 
+                                           class="px-3 py-2 bg-returned hover:bg-returned/90 text-white text-sm font-medium rounded-lg transition-colors">
+                                            Proses Kembali
+                                        </a>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="px-6 py-12 text-center text-text-secondary">
+                                        Tidak ada barang yang sedang dipinjam.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-6">
+                    {{ $dipinjam->links() }}
+                </div>
+            @endif
         </div>
     </main>
 </div>

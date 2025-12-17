@@ -20,8 +20,10 @@ class Show extends Component
 
     public function approve()
     {
+        $routePrefix = auth()->user()->isAdmin() ? 'admin' : 'petugas';
+
         if ($this->pengajuan->status !== 'pending') {
-            session()->flash('error', 'Pengajuan sudah diproses.');
+            $this->dispatch('swal:error', message: 'Pengajuan sudah diproses.');
             return;
         }
 
@@ -29,27 +31,30 @@ class Show extends Component
 
         // Check stock availability
         if ($barang->jumlah_tersedia < $this->pengajuan->jumlah) {
-            session()->flash('error', 'Stok tidak mencukupi.');
+            $this->dispatch('swal:error', message: 'Stok tidak mencukupi.');
             return;
         }
 
         // Reduce available stock
         $barang->decrement('jumlah_tersedia', $this->pengajuan->jumlah);
 
+        // Directly set status to 'dipinjam' (simplified flow)
         $this->pengajuan->update([
-            'status' => 'disetujui',
+            'status' => 'dipinjam',
             'id_petugas' => auth()->id(),
             'approved_at' => now(),
         ]);
 
-        session()->flash('success', 'Pengajuan disetujui.');
-        return redirect()->route('petugas.pengajuan.index');
+        session()->flash('swal', ['type' => 'success', 'message' => 'Pengajuan disetujui. Barang sudah dipinjam.']);
+        return redirect()->route($routePrefix . '.pengajuan.index');
     }
 
     public function reject()
     {
+        $routePrefix = auth()->user()->isAdmin() ? 'admin' : 'petugas';
+
         if ($this->pengajuan->status !== 'pending') {
-            session()->flash('error', 'Pengajuan sudah diproses.');
+            $this->dispatch('swal:error', message: 'Pengajuan sudah diproses.');
             return;
         }
 
@@ -58,23 +63,8 @@ class Show extends Component
             'id_petugas' => auth()->id(),
         ]);
 
-        session()->flash('success', 'Pengajuan ditolak.');
-        return redirect()->route('petugas.pengajuan.index');
-    }
-
-    public function markDipinjam()
-    {
-        if ($this->pengajuan->status !== 'disetujui') {
-            session()->flash('error', 'Pengajuan belum disetujui.');
-            return;
-        }
-
-        $this->pengajuan->update([
-            'status' => 'dipinjam',
-        ]);
-
-        session()->flash('success', 'Status diubah menjadi dipinjam.');
-        return redirect()->route('petugas.pengajuan.index');
+        session()->flash('swal', ['type' => 'success', 'message' => 'Pengajuan berhasil ditolak.']);
+        return redirect()->route($routePrefix . '.pengajuan.index');
     }
 
     public function logout()
@@ -90,3 +80,4 @@ class Show extends Component
         return view('livewire.petugas.pengajuan.show');
     }
 }
+
