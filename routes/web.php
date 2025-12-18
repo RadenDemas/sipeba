@@ -41,12 +41,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/user/{user}/edit', \App\Livewire\Admin\User\Edit::class)->name('user.edit');
 
     // Pengajuan (reuse Petugas components)
-    Route::get('/pengajuan', \App\Livewire\Petugas\Pengajuan\Index::class)->name('pengajuan.index');
-    Route::get('/pengajuan/{pengajuan}', \App\Livewire\Petugas\Pengajuan\Show::class)->name('pengajuan.show');
+    Route::get('/pengajuan', \App\Livewire\Admin\Pengajuan\Index::class)->name('pengajuan.index');
+    Route::get('/pengajuan/create', \App\Livewire\Admin\Pengajuan\Create::class)->name('pengajuan.create');
+    Route::get('/pengajuan/{pengajuan}', \App\Livewire\Admin\Pengajuan\Show::class)->name('pengajuan.show');
+    Route::get('/pengajuan/{pengajuan}/edit', \App\Livewire\Admin\Pengajuan\Edit::class)->name('pengajuan.edit');
 
     // Pengembalian (reuse Petugas components)
-    Route::get('/pengembalian', \App\Livewire\Petugas\Pengembalian\Index::class)->name('pengembalian.index');
-    Route::get('/pengembalian/{pengajuan}', \App\Livewire\Petugas\Pengembalian\Create::class)->name('pengembalian.create');
+    Route::get('/pengembalian', \App\Livewire\Admin\Pengembalian\Index::class)->name('pengembalian.index');
 });
 
 // Petugas routes
